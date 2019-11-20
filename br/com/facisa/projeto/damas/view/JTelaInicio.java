@@ -73,11 +73,9 @@ public class JTelaInicio implements ActionListener {
 		painel.add(btnInicioPartida);
 
 		btnInicioPartida.addActionListener(
-				// Se clicar em entrar
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 
-						// Valida campo do tamanho do tabuleiro
 						if (JTextTamanhoDoTabuleiro.getText().matches("[0-9]*")) {
 							if (Integer.valueOf(JTextTamanhoDoTabuleiro.getText()) % 2 == 0) {
 								tamanho = Integer.valueOf(JTextTamanhoDoTabuleiro.getText());

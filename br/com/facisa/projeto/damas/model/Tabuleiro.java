@@ -5,7 +5,7 @@ import javax.swing.JInternalFrame;
 import br.com.facisa.projeto.damas.controller.Casa;
 
 public class Tabuleiro extends JInternalFrame {
-
+	private static final long serialVersionUID = 1L;
 	private Casa casa[][] = null;
 	private char tabuleiro[][] = null;
 	private int selx = -1;

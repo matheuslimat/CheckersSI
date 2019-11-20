@@ -6,7 +6,9 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 
 public class Casa extends JPanel{
-  	private boolean sel = false;
+	private static final long serialVersionUID = 1L;
+	
+	private boolean sel = false;
   	private boolean possivel = false;
   	private boolean dama = false;
   	private Color selColor = null;

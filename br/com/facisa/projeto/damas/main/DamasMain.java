@@ -1,22 +1,14 @@
 package br.com.facisa.projeto.damas.main;
-import br.com.facisa.projeto.damas.controller.TabuleiroController;
-import br.com.facisa.projeto.damas.model.Tabuleiro;
-import br.com.facisa.projeto.damas.view.JTelaDama;
+import br.com.facisa.projeto.damas.view.JTelaInicio;
 
 public class DamasMain {
 	public static void main(String args[]) {
 		
-		// MODEL
-		Tabuleiro tb = new Tabuleiro(' ', 8);
-		
-		// CONTROLLER
-		TabuleiroController tbc = new TabuleiroController(tb.getTabuleiro(), tb.getTamanho(), tb.getCasa(), tb.getVez());
-		tbc.resetaTabuleiro();
-		tbc.posicionaJogador('A', 0);
-		tbc.posicionaJogador('B', tb.getPosicaoB());
+		// MVC -> VIEW CHAMA CONTROLLER, CONTROLLER MANIPULA MODEL
 		
 		// VIEW
-		JTelaDama jtd = new JTelaDama(tb.getTamanho());
+		JTelaInicio jti = new JTelaInicio();
+		jti.formInicio();
 		
 	}
 }

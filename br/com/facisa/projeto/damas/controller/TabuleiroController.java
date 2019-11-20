@@ -1,24 +1,57 @@
 package br.com.facisa.projeto.damas.controller;
 
 import java.awt.Color;
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-public class TabuleiroController {
+import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 
-	private Integer tamanho;
-	private char tabuleiro[][] = null;
-	private Casa casa[][] = null;
-	private char vez;
+public class TabuleiroController extends JInternalFrame implements MouseListener, MouseMotionListener{
+
+	private static final long serialVersionUID = 1L;
+	protected Integer tamanho;
+	protected char tabuleiro[][] = null;
+	public Casa casa[][] = null;
+	protected char vez = 'A';
+	private char eu = ' ';
 	private ObjectOutputStream output;
+	private int posicaoB;
+	private int selx = -1;
+	private int sely = -1;
+	private byte pecasA = 0;
+	private byte pecasB = 0;
+	public boolean bloq = false;
 	public static final Integer PORCENTAGEM_POSICAO_B = 40;
 	public static final Integer PORCENTAGEM_DEFAULT = 100;
 	
-	public TabuleiroController(char[][] tabuleiro, Integer tamanho, Casa[][] casa, char vez) {
+	public GridBagConstraints gbConstraints = new GridBagConstraints();
+	public Container container = getContentPane();
+	public GridBagLayout gbLayout = new GridBagLayout();
+	
+	public ValidacaoController vc;
+	
+	private Color corA = new Color(255, 255, 255);
+	private Color corB = new Color(0, 0, 0);
+	
+	public TabuleiroController(char me, Integer tamanho) {
 		this.tamanho = tamanho;
-		this.tabuleiro = tabuleiro;
 		this.casa = new Casa[tamanho][tamanho];
-		this.vez = vez;
+		this.posicaoB = calculaPosicaoB(tamanho);
+		this.tabuleiro = new char[tamanho][tamanho];
+		this.eu = me;
+		this.container.setLayout(gbLayout);
+		vc = new ValidacaoController(this);
+		addMouseListener(this);
+		addMouseMotionListener(this);
+		
 	}
 
 	public void resetaTabuleiro() {
@@ -64,11 +97,11 @@ public class TabuleiroController {
 					if (tabuleiro[(pos + posInicial) / tamanho][(int) ((pos + posInicial) % tamanho)] == ' ') {
 						tabuleiro[(pos + posInicial) / tamanho][(int) ((pos + posInicial) % tamanho)] = jogador;
 						if (jogador == 'A') {
-//							casa[(pos + posInicial) / tamanho][(int) ((pos + posInicial) % tamanho)]
-//									.setForeground(corA);
+							casa[(pos + posInicial) / tamanho][(int) ((pos + posInicial) % tamanho)]
+									.setForeground(corA);
 						} else if (jogador == 'B') {
-//							casa[(pos + posInicial) / tamanho][(int) ((pos + posInicial) % tamanho)]
-//									.setForeground(corB);
+							casa[(pos + posInicial) / tamanho][(int) ((pos + posInicial) % tamanho)]
+									.setForeground(corB);
 						}
 						break;
 					}
@@ -142,6 +175,120 @@ public class TabuleiroController {
 			}
 		}
 	}
+	
+	private void desPossibilita() {
 
+		int posX = 0;
+		int posY = 0;
 
+		for (posX = 0; posX < tamanho; posX++) {
+			for (posY = 0; posY < tamanho; posY++) {
+				casa[posY][posX].setPossivel(false, Color.cyan);
+				casa[posY][posX].seleciona(false, Color.red);
+				selx = sely = -1;
+			}
+		}
+	}
+
+	// botao do mouse foi solto
+	public void mouseReleased(MouseEvent e) {
+		int x = 0;
+		int y = 0;
+		if (!bloq && vez == eu) {
+			if (pecasA > 0 && pecasB > 0) {
+				x = (e.getX()) / (super.getWidth() / tamanho);
+				y = (e.getY() - 13) / (super.getHeight() / tamanho);
+				if (casa[y][x].isPossivel()) {
+					if (Math.abs(selx - x) == 2) {
+						System.out.println("Peça comida pelo jogador " + vez);
+						comePeca((selx + x) / 2, (sely + y) / 2, true);
+					}
+
+					movePeca(selx, sely, x, y);
+
+					if (pecasA == 0)
+						JOptionPane.showMessageDialog(this, "O Jogador B Ganhou !", "Fim de Jogo",
+								JOptionPane.PLAIN_MESSAGE);
+
+					if (pecasB == 0)
+						JOptionPane.showMessageDialog(this, "O Jogador A Ganhou !", "Fim de Jogo",
+								JOptionPane.PLAIN_MESSAGE);
+
+					if (vez == 'A') {
+						vez = 'B';
+					} else {
+						vez = 'A';
+					}
+				}
+
+				desPossibilita();
+
+				if (tabuleiro[y][x] != ' ' && tabuleiro[y][x] != '*') {
+					casa[y][x].seleciona(true, Color.red);
+					selx = x;
+					sely = y;
+					vc.lancesPossiveis(x, y);
+				}
+			}
+		}
+	}
+	
+	public void mostra(JDesktopPane main) {
+		main.add(this);
+		setOpaque(true);
+		show();
+	}
+
+	public int getPosicaoB() {
+		return posicaoB;
+	}
+
+	public Casa[][] getCasa() {
+		return casa;
+	}
+
+	public void setCasa(Casa[][] casa) {
+		this.casa = casa;
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+
+	
+	
 }

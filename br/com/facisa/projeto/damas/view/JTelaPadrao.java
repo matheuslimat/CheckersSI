@@ -1,10 +1,15 @@
 package br.com.facisa.projeto.damas.view;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+
+import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
 
 public class JTelaPadrao extends JInternalFrame { 
 
+	private static final long serialVersionUID = 1L;
 	private Container container;
 	private GridBagLayout gbLayout;
 	private GridBagConstraints gbConstraints;
